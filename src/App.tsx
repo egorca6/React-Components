@@ -11,6 +11,7 @@ import { Results } from './types/interface';
 import { Details } from './components/Details';
 import { ResultContext, SearchContext } from './utils/Context';
 import Pagination from './components/Pagination';
+import { Counter } from './components/testCounter';
 
 export const App = () => {
   const storedUserInput = localStorage.getItem('userInput');
@@ -141,6 +142,7 @@ export const App = () => {
           onClose={handleClearSelection}
         />
       )}
+      <Counter />
     </div>
   );
 };
