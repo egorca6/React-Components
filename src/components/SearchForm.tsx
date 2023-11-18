@@ -1,18 +1,22 @@
-import React, { ChangeEvent, useContext, useState } from 'react';
+import React, { useContext } from 'react';
 import { SearchContext } from '../utils/Context';
+import { useDispatch, useSelector } from 'react-redux';
+import { setSearchValue } from '../store/slices/searchSlice';
+import { RootState } from '../store/store';
 
 export const SearchForm = (): JSX.Element => {
   const context = useContext(SearchContext);
-  const [searchTerm, setSearchTerm] = useState(context.searchTerm || '');
 
-  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setSearchTerm(event.target.value);
-  };
+  const searchValue = useSelector((state: RootState) => state.search.value);
+  const dispatch = useDispatch();
 
   const handleSearch = () => {
-    context.onSearch(searchTerm);
+    context.onSearch(searchValue);
   };
-
+  const handleSearchEnter = (event: React.ChangeEvent<HTMLInputElement>) => {
+    dispatch(setSearchValue(event.target.value));
+    console.log('Search value:', searchValue);
+  };
   const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Enter') {
       handleSearch();
@@ -22,8 +26,8 @@ export const SearchForm = (): JSX.Element => {
     <div className="SearchFormContainer">
       <input
         type="text"
-        value={searchTerm}
-        onChange={handleChange}
+        value={searchValue}
+        onChange={handleSearchEnter}
         onKeyDown={handleKeyPress}
         placeholder="Search..."
       />
