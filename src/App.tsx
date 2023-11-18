@@ -11,16 +11,21 @@ import { Results } from './types/interface';
 import { Details } from './components/Details';
 import { ResultContext, SearchContext } from './utils/Context';
 import Pagination from './components/Pagination';
-import { Counter } from './components/testCounter';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from './store/store';
+import { setPageSize } from './store/slices/searchSlice';
 
 export const App = () => {
+  const dispatch = useDispatch();
+  const pageSize = useSelector((state: RootState) => state.search.pageSize);
+
   const storedUserInput = localStorage.getItem('userInput');
   const [userInput, setUserInput] = useState(storedUserInput || '');
   const [results, setResults] = useState([]);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-  const [pageSize, setPageSize] = useState(10);
+
   const [selectedCharacterId, setSelectedCharacterId] = useState<
     number | null
   >();
@@ -98,7 +103,7 @@ export const App = () => {
   };
 
   const handlePageSizeChange = (newPageSize: number) => {
-    setPageSize(newPageSize);
+    dispatch(setPageSize(newPageSize));
   };
 
   return (
@@ -142,7 +147,6 @@ export const App = () => {
           onClose={handleClearSelection}
         />
       )}
-      <Counter />
     </div>
   );
 };
