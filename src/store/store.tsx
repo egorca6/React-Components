@@ -2,10 +2,14 @@ import { configureStore } from '@reduxjs/toolkit';
 import searchReducer from '../store/slices/searchSlice';
 import { api } from './slices/api/api';
 import { setupListeners } from '@reduxjs/toolkit/query';
+import detailsPageReducer from '../store/slices/detailsPageSlice';
+import mainPageReducer from '../store/slices/mainPageSlice';
 
 export const store = configureStore({
   reducer: {
     search: searchReducer,
+    mainPage: mainPageReducer,
+    detailsPage: detailsPageReducer,
     [api.reducerPath]: api.reducer,
   },
   middleware: (getDefaultMiddleware) =>

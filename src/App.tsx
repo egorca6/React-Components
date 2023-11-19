@@ -20,7 +20,7 @@ export const App = () => {
   const pageSize = useSelector((state: RootState) => state.search.pageSize);
   const storedUserInput = localStorage.getItem('userInput');
   const [userInput, setUserInput] = useState(storedUserInput || '');
-  const [isPagination, setIsPagination] = useState(false);
+  const [isPagination, setIsPagination] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedCharacterId, setSelectedCharacterId] = useState<
     number | null
@@ -55,11 +55,12 @@ export const App = () => {
   });
 
   const resultsArray2 = characterByPageData?.results ?? [];
-  console.log('characterByPageData', characterByPageData);
-
+  // useGetCharacterByPageQuery({ page: 1, pageSize: 10 });
+  // useGetCharacterByNameQuery('rick');
   const { data, isLoading, error } = useGetCharacterByNameQuery(userInput);
   let resultsArray = data?.results ?? [];
 
+  console.log('isLoading', isLoading);
   const handleSearch = (userInput: string) => {
     localStorage.setItem('userInput', userInput);
     setUserInput(userInput);
