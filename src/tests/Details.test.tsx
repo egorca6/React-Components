@@ -1,11 +1,11 @@
 import { render, screen, act } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { Details } from '../components/Details';
-import { Results } from '../types/interface';
+import { ICharacter } from '../types/interface';
 
 jest.mock('node-fetch');
 
-const characterDetails: Results = {
+const characterDetails: ICharacter = {
   url: 'character-url',
   id: 1,
   name: 'Character Name',
