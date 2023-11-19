@@ -55,8 +55,7 @@ export const App = () => {
   });
 
   const resultsArray2 = characterByPageData?.results ?? [];
-  // useGetCharacterByPageQuery({ page: 1, pageSize: 10 });
-  // useGetCharacterByNameQuery('rick');
+
   const { data, isLoading, error } = useGetCharacterByNameQuery(userInput);
   let resultsArray = data?.results ?? [];
 
