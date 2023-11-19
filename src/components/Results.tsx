@@ -1,23 +1,23 @@
 import { useContext } from 'react';
-import { Results } from '../types/interface';
 import './Results.css';
 import { ResultContext } from '../utils/Context';
+import { ICharacter } from '../types/interface';
 
 export const ResultsAPI = (): JSX.Element => {
   const context = useContext(ResultContext);
   const { results, selectedPageSize, onItemClick } = context;
   const resultsToDisplay = selectedPageSize
-    ? results.slice(0, selectedPageSize)
+    ? results?.slice(0, selectedPageSize)
     : results;
   return (
     <div className="ResultsContainer">
-      {resultsToDisplay.length === 0 ? (
+      {resultsToDisplay?.length === 0 ? (
         <p>No cards available</p>
       ) : (
-        resultsToDisplay.map((result: Results) => (
+        resultsToDisplay?.map((result: ICharacter) => (
           <div
             key={result.url}
-            onClick={() => onItemClick(result)}
+            onClick={onItemClick ? () => onItemClick(result) : undefined}
             data-testid="result-card"
           >
             <h3>Name: {result.name}</h3>
