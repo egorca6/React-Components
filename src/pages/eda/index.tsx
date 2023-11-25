@@ -1,7 +1,7 @@
 const Eda = () => {
   return (
     <div>
-      <h1>Наша еда</h1>
+      <h1>1</h1>
     </div>
   );
 };
