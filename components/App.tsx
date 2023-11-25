@@ -14,13 +14,15 @@ import { ResultContext, SearchContext } from "./Context";
 import { SearchForm } from "./SearchForm";
 import { ResultsAPI } from "./Results";
 import Pagination from "./Pagination";
+import { Details } from "@/pages/detail/Details";
+import { fetchDetails } from "@/rest api/character";
 
 export const App = () => {
   const dispatch = useDispatch();
   const pageSize = useSelector((state: RootState) => state.search.pageSize);
-  // const storedUserInput = localStorage.getItem("userInput");
-  // const [userInput, setUserInput] = useState(storedUserInput || "");
-  const userInput = useSelector((state: RootState) => state.search.value);
+  const userInput2 = useSelector((state: RootState) => state.search.value);
+  const [userInput, setUserInput] = useState(userInput2 || "");
+
   const [isPagination, setIsPagination] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedCharacterId, setSelectedCharacterId] = useState<
@@ -30,15 +32,15 @@ export const App = () => {
     null
   );
 
-  // const handleSelectedCharacter = (characterId: number) => {
-  //   setSelectedCharacterId(characterId);
-  //   fetchDetails(characterId).then((details) => {
-  //     setCharacterDetails(details);
-  //   });
-  // };
+  const handleSelectedCharacter = (characterId: number) => {
+    setSelectedCharacterId(characterId);
+    fetchDetails(characterId).then((details) => {
+      setCharacterDetails(details);
+    });
+  };
 
   const handleSelectedCharacterFromResults = (result: ICharacter) => {
-    // handleSelectedCharacter(result.id);
+    handleSelectedCharacter(result.id);
     console.log("hi^^");
   };
 
@@ -49,8 +51,8 @@ export const App = () => {
 
   const {
     data: characterByPageData,
-    // isLoading: isCharacterByPageLoading,
-    // error: characterByPageError,
+    isLoading: isCharacterByPageLoading,
+    error: characterByPageError,
   } = useGetCharacterByPageQuery({
     page: currentPage,
     pageSize: pageSize,
@@ -64,7 +66,7 @@ export const App = () => {
   console.log("isLoading", isLoading);
   const handleSearch = (userInput: string) => {
     localStorage.setItem("userInput", userInput);
-    // setUserInput(userInput);
+    setUserInput(userInput2);
     setIsPagination(false);
     setCurrentPage(1);
   };
@@ -113,12 +115,12 @@ export const App = () => {
         )}
       </div>
 
-      {/* {selectedCharacterId && characterDetails && (
+      {selectedCharacterId && characterDetails && (
         <Details
           characterDetails={characterDetails}
           onClose={handleClearSelection}
         />
-      )} */}
+      )}
     </div>
   );
 };

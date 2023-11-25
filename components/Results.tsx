@@ -17,6 +17,7 @@ export const ResultsAPI = (): JSX.Element => {
       ) : (
         resultsToDisplay?.map((result: ICharacter) => (
           <div
+            className="ResultsApi"
             key={result.url}
             onClick={onItemClick ? () => onItemClick(result) : undefined}
             data-testid="result-card"
