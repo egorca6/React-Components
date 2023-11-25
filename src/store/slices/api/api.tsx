@@ -1,9 +1,9 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { Get_Character } from '../../../constants/api';
-import { ICharacterArray } from '../../../types/interface';
+import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { Get_Character } from "@/constants/api";
+import { ICharacterArray } from "@/types/interface";
 
 export const api = createApi({
-  reducerPath: 'api',
+  reducerPath: "api",
   baseQuery: fetchBaseQuery({ baseUrl: Get_Character }),
   endpoints: (builder) => ({
     getCharacterByName: builder.query<ICharacterArray, string>({
