@@ -6,7 +6,7 @@ import {
 } from "@/store/slices/api/api";
 import { ICharacter } from "@/types/interface";
 import { setPageSize } from "@/store/slices/searchSlice";
-import { RootState } from "@/store/store";
+import { RootState, wrapper } from "@/store/store";
 import { ResultContext, SearchContext } from "./Context";
 import { SearchForm } from "./SearchForm";
 import { ResultsAPI } from "./Results";

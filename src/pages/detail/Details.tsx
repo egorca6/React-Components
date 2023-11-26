@@ -2,6 +2,11 @@ import React, { useEffect, useState } from "react";
 import { DetailsProps, EpisodeDetails } from "../../types/interface";
 import Image from "next/image";
 import router from "next/router";
+import { wrapper } from "@/store/store";
+import {
+  getCharacterDetails,
+  getRunningQueriesThunk,
+} from "@/store/slices/api/api";
 
 export const Details: React.FC<DetailsProps> = ({
   characterDetails,
@@ -74,16 +79,3 @@ export const Details: React.FC<DetailsProps> = ({
     </div>
   );
 };
-
-// export async function getServerSideProps() {
-//   const response = await fetch(
-//     "https://rickandmortyapi.com/api/character/?page=4"
-//   );
-//   const data = await response.json();
-//   const myRez = data.results;
-//   return {
-//     props: {
-//       test1: myRez,
-//     },
-//   };
-// }
