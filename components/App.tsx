@@ -11,7 +11,7 @@ import { ResultContext, SearchContext } from "./Context";
 import { SearchForm } from "./SearchForm";
 import { ResultsAPI } from "./Results";
 import Pagination from "./Pagination";
-import { Details } from "@/pages/detail/Details";
+import Details from "@/pages/detail/Details";
 import { fetchDetails } from "@/rest api/character";
 
 export const App = () => {

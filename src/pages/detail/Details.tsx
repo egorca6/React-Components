@@ -8,10 +8,7 @@ import {
   getRunningQueriesThunk,
 } from "@/store/slices/api/api";
 
-export const Details: React.FC<DetailsProps> = ({
-  characterDetails,
-  onClose,
-}) => {
+const Details: React.FC<DetailsProps> = ({ characterDetails, onClose }) => {
   const [episodeDetails, setEpisodeDetails] = useState<EpisodeDetails[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -79,3 +76,19 @@ export const Details: React.FC<DetailsProps> = ({
     </div>
   );
 };
+export default Details;
+
+export const getServerSideProps = wrapper.getServerSideProps(
+  (store) => async (context) => {
+    const name = context.params?.name;
+    if (typeof name === "number") {
+      store.dispatch(getCharacterDetails.initiate(name));
+    }
+
+    await Promise.all(store.dispatch(getRunningQueriesThunk()));
+
+    return {
+      props: {},
+    };
+  }
+);
