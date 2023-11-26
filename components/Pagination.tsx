@@ -1,3 +1,6 @@
+import Link from "next/link";
+import { useRouter } from "next/router";
+
 export interface PaginationProps {
   currentPage: number;
   pageSize: number;
@@ -12,19 +15,34 @@ const Pagination: React.FC<PaginationProps> = ({
   onPageChange,
   onPageSizeChange,
 }) => {
+  const router = useRouter();
+
   const handlePrevPage = () => {
     if (currentPage > 1) {
-      onPageChange(currentPage - 1);
+      const newPage = currentPage - 1;
+      onPageChange(newPage);
+      updateUrl(newPage);
     }
   };
 
   const handleNextPage = () => {
-    onPageChange(currentPage + 1);
+    const newPage = currentPage + 1;
+    onPageChange(newPage);
+    updateUrl(newPage);
+  };
+
+  const updateUrl = (page: number) => {
+    const queryParams = { ...router.query, page };
+    router.push({
+      pathname: router.pathname,
+      query: queryParams,
+    });
   };
 
   return (
     <div className="pagination">
       <button onClick={handlePrevPage}>Prev</button>
+
       <div>{currentPage}</div>
       <button onClick={handleNextPage}>Next</button>
       <select

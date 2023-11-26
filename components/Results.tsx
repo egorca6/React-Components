@@ -1,8 +1,9 @@
 import { useContext } from "react";
-// import "./Results.css";
+import Image from "next/image";
 
 import { ICharacter } from "../src/types/interface";
 import { ResultContext } from "./Context";
+import Link from "next/link";
 
 export const ResultsAPI = (): JSX.Element => {
   const context = useContext(ResultContext);
@@ -22,11 +23,18 @@ export const ResultsAPI = (): JSX.Element => {
             onClick={onItemClick ? () => onItemClick(result) : undefined}
             data-testid="result-card"
           >
-            <h3>Name: {result.name}</h3>
-            <img src={result.image} alt={result.name} />
-            <h3>Species: {result.species}</h3>
-            <h3>Status: {result.status}</h3>
-            <h3>Location: {result.location.name}</h3>
+            <Link href={`/detail/${result.id}`} key={result.id}>
+              <h3>Name: {result.name}</h3>
+              <Image
+                src={result.image}
+                alt={result.name}
+                width={300}
+                height={300}
+              />
+              <h3>Species: {result.species}</h3>
+              <h3>Status: {result.status}</h3>
+              <h3>Location: {result.location.name}</h3>
+            </Link>
           </div>
         ))
       )}

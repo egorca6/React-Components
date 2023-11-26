@@ -1,14 +1,8 @@
-import Link from "next/link";
-
 const Header = () => {
   return (
     <header>
       <div>
-        <nav>
-          <Link href={"/"}>Домой</Link>
-          <Link href={"/about"}>About</Link>
-          <Link href={"/eda"}>Eda</Link>
-        </nav>
+        <h1>All characters of the universe Rick and Morty</h1>
       </div>
     </header>
   );

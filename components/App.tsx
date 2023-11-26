@@ -1,7 +1,4 @@
 import { useState } from "react";
-// import "./App.css";
-// import { fetchDetails } from "./rest api/character";
-// import { Details } from './components/Details';
 import { useDispatch, useSelector } from "react-redux";
 import {
   useGetCharacterByNameQuery,

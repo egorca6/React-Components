@@ -5,6 +5,7 @@ import { ICharacterArray } from "@/types/interface";
 export const api = createApi({
   reducerPath: "api",
   baseQuery: fetchBaseQuery({ baseUrl: Get_Character }),
+
   endpoints: (builder) => ({
     getCharacterByName: builder.query<ICharacterArray, string>({
       query: (name) => `?name=${name}`,
