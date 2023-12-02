@@ -4,6 +4,8 @@ import * as yup from 'yup';
 import { Link, useNavigate } from 'react-router-dom';
 import './Form1Styles.css';
 import React from 'react';
+import { useDispatch } from 'react-redux';
+import { addForm1Data } from '../store/formSlice';
 
 const schema = yup
   .object({
@@ -36,6 +38,7 @@ const schema = yup
 type FormData = yup.InferType<typeof schema>;
 
 export default function Form1() {
+  const dispatch = useDispatch();
   const {
     register,
     handleSubmit,
@@ -47,11 +50,14 @@ export default function Form1() {
   });
 
   const navigate = useNavigate();
+
   const onSubmit = (data: FormData) => {
     console.log(data);
+    dispatch(addForm1Data(data));
     navigate('/');
   };
 
+  // const firstNameValue = watch('firstName');
   const emailValue = watch('email');
   React.useEffect(() => {
     if (emailValue) {
