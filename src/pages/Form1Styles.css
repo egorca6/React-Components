@@ -65,3 +65,7 @@ input[type='file'] {
 .link:hover {
   text-decoration: underline;
 }
+button[type='submit']:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}

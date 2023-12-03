@@ -8,8 +8,10 @@ export interface FormState {
     email: string;
     password: string;
     confirmPassword: string;
-    file: string | null;
+    subscribe: boolean;
+    file: File | null;
     country: string;
+    isNew: boolean;
   }[];
   countries: { id: string; name: string }[];
 }
@@ -29,8 +31,12 @@ export const formSlice = createSlice({
   initialState,
   reducers: {
     addForm1Data: (state, action) => {
+      state.form1Data.forEach((formData) => {
+        formData.isNew = false;
+      });
       state.form1Data.push({
         ...action.payload,
+        isNew: true,
       });
     },
     clearFormData: () => {

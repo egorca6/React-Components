@@ -16,7 +16,7 @@ function App() {
       </Link>
       <div className="results-container">
         {formDataForm1.map((data) => (
-          <div className="results">
+          <div className={data.isNew ? 'newDataStyle' : 'results'}>
             <p>First Name: {data.firstName}</p>
             <p>Gender: {data.gender}</p>
             <p>Age: {data.age}</p>
@@ -25,7 +25,12 @@ function App() {
             <p>country: {data.country}</p>
             <p>
               {data.file && (
-                <img src={data.file} alt="Uploaded" width={100} height={100} />
+                <img
+                  src={URL.createObjectURL(data.file)}
+                  alt="Uploaded"
+                  width={100}
+                  height={100}
+                />
               )}
             </p>
           </div>

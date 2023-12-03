@@ -38,15 +38,16 @@ const schema = yup
     file: yup
       .mixed()
       .test('fileSize', 'File size is too large', (value) => {
-        if (!Array.isArray(value) || !value[0]) return true;
-        return value[0].size <= 1024 * 1024;
+        return value ? (value as File).size <= 1024 * 1024 : false;
       })
       .test('fileType', 'Invalid file type', (value) => {
-        if (!Array.isArray(value) || !value[0]) return true;
-        return ['image/png', 'image/jpeg'].includes(value[0].type);
+        return value
+          ? ['image/jpeg', 'image/png'].includes((value as File).type)
+          : false;
       }),
 
     country: yup.string().required('Please select a country'),
+    subscribe: yup.boolean().oneOf([true], 'Please accept the T&C'),
   })
   .required();
 type FormData = yup.InferType<typeof schema>;
@@ -56,7 +57,7 @@ export default function Form1() {
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isValid },
     watch,
     trigger,
     setValue,
@@ -69,10 +70,8 @@ export default function Form1() {
   const onSubmit = (data: FormData) => {
     console.log(data);
     dispatch(addForm1Data(data));
-    // console.log('file=', data.file);
     navigate('/');
   };
-
   const fileValue = watch('file');
   const emailValue = watch('email');
   const firstNameValue = watch('firstName');
@@ -110,8 +109,9 @@ export default function Form1() {
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
-    if (files) {
-      const file = URL.createObjectURL(files[0]);
+    if (files && files.length > 0) {
+      const file = files[0];
+      console.log('file size:=', file.size);
       setValue('file', file);
     }
   };
@@ -143,7 +143,7 @@ export default function Form1() {
           <option value="Woman">Woman</option>
         </select>
         <p>{errors.gender?.message}</p>
-        <input type="checkbox" id="subscribeNews" />
+        <input type="checkbox" {...register('subscribe')} />
         <label htmlFor="acceptTerms">I accept the Terms & Conditions</label>
         <input type="file" accept="image/*" onChange={handleFileChange} />
         <p>{errors.file?.message}</p>
@@ -160,7 +160,9 @@ export default function Form1() {
             ))}
           </datalist>
         </div>
-        <button type="submit">Send</button>
+        <button type="submit" disabled={!isValid}>
+          Send
+        </button>
       </form>
       <Link to={`/`}>Main</Link>
     </>
