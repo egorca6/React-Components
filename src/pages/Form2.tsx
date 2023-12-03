@@ -1,74 +1,108 @@
-import { useForm } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
-import * as yup from 'yup';
+import React, { useRef, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { addForm1Data } from '../store/formSlice';
 import { Link, useNavigate } from 'react-router-dom';
-import './Form1Styles.css';
+import { RootState } from '../store/store';
+import './Form2Styles.css';
 
-const schema = yup
-  .object({
-    firstName: yup.string().required(),
-    age: yup.number().positive().integer().required(),
-    subscribe: yup.boolean().oneOf([true], 'Please accept the T&C'),
-    country: yup.string().required('Please select a country'),
-  })
-  .required();
-type FormData = yup.InferType<typeof schema>;
-
-export default function Form1() {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<FormData>({
-    resolver: yupResolver(schema),
-  });
-
+const Form = () => {
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const dispatch = useDispatch();
   const navigate = useNavigate();
-  const onSubmit = (data: FormData) => {
-    console.log(data);
-    navigate('/');
+  const countries = useSelector((state: RootState) => state.countries);
+  const [errors, setErrors] = useState<{ [key: string]: string }>({});
+
+  const handleValidation = (formData: FormData) => {
+    const firstName = formData.get('firstName') as string;
+    const email = formData.get('email') as string;
+    const age = formData.get('age') as string;
+    const errorsObj: { [key: string]: string } = {};
+
+    if (!/^[A-Z]/.test(firstName)) {
+      errorsObj.firstName =
+        'Please enter a firstName starting with an uppercase letter.';
+    }
+
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      errorsObj.email = 'Please enter a valid email address.';
+    }
+
+    if (isNaN(Number(age)) || Number(age) < 0) {
+      errorsObj.age = 'Please enter a valid non-negative number for age.';
+    }
+    setErrors(errorsObj);
+    return Object.keys(errorsObj).length === 0;
+  };
+
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    const formData = new FormData(event.currentTarget);
+    const file = fileInputRef.current?.files?.[0];
+    const isFormValid = handleValidation(formData);
+    if (isFormValid) {
+      const dataToAdd = {
+        firstName: formData.get('firstName'),
+        gender: formData.get('gender'),
+        age: formData.get('age'),
+        email: formData.get('email'),
+        password: formData.get('password'),
+        country: formData.get('country'),
+        file: file,
+        isNew: true,
+      };
+      dispatch(addForm1Data(dataToAdd));
+      navigate('/');
+    }
   };
 
   return (
     <>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <p>Name</p> <input {...register('firstName')} />
-        <p>{errors.firstName?.message}</p>
-        <p>Аge</p>
-        <input {...register('age')} />
-        <p>{errors.age?.message}</p>
-        <p>Email</p>
-        <input {...register('age')} />
-        <p>{errors.age?.message}</p>
-        <p>Password</p>
-        <input {...register('age')} />
-        <p>{errors.age?.message}</p>
-        <p>Confirm Password</p>
-        <input {...register('age')} />
-        <p>{errors.age?.message}</p>
-        <select>
-          <option value="Man" {...register('firstName')}>
-            Man
-          </option>
-          <option value="Woman">Woman</option>
-        </select>
-        <input type="checkbox" id="subscribeNews" />
-        <label htmlFor="acceptTerms">I accept the Terms & Conditions</label>
-        <p>{errors.subscribe?.message}</p>
-        <input type="file" />
-        {/* <div>
-          <label htmlFor="city">City</label>
+      <form onSubmit={handleSubmit}>
+        <div>
+          <input type="text" name="firstName" placeholder="firstName" />
+          {errors.firstName && <p className="error">{errors.firstName}</p>}
+        </div>
+        <div>
+          <select name="gender">
+            <option value="male">Male</option>
+            <option value="female">Female</option>
+          </select>
+        </div>
+        <div>
+          <input type="number" name="age" placeholder="age" />
+          {errors.age && <p className="error">{errors.age}</p>}
+        </div>
+        <div>
+          <input type="email" name="email" placeholder="email" />
+          {errors.email && <p className="error">{errors.email}</p>}
+        </div>
+        <div>
+          <input type="password" name="password" placeholder="Password" />
+        </div>
+        <div>
+          <label htmlFor="country"></label>
           <input
-            autoComplete="address-level2"
-            required
-            type="text"
-            id="city"
-            name="city"
+            list="countryList"
+            name="country"
+            placeholder="Select a country"
           />
-        </div> */}
+          <datalist id="countryList">
+            {countries.map((country) => (
+              <option key={country.id} value={country.name} />
+            ))}
+          </datalist>
+        </div>
+        <input type="checkbox" id="acceptTerms" />
+        <label htmlFor="acceptTerms">I accept the Terms & Conditions</label>
+        <div>
+          <input type="file" name="file" ref={fileInputRef} accept="image/*" />
+        </div>
         <button type="submit">Send</button>
       </form>
       <Link to={`/`}>Main</Link>
     </>
   );
-}
+};
+
+export default Form;

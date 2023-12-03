@@ -143,7 +143,7 @@ export default function Form1() {
           <option value="Woman">Woman</option>
         </select>
         <p>{errors.gender?.message}</p>
-        <input type="checkbox" {...register('subscribe')} />
+        <input type="checkbox" {...register('subscribe')} id="acceptTerms" />
         <label htmlFor="acceptTerms">I accept the Terms & Conditions</label>
         <input type="file" accept="image/*" onChange={handleFileChange} />
         <p>{errors.file?.message}</p>
