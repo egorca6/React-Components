@@ -8,20 +8,26 @@ function App() {
   console.log('email', formDataForm1);
   return (
     <>
-      <Link to="/form1" className="uncontrolledForm">
+      <Link to="/form2" className="uncontrolledForm">
         uncontrolled Components
       </Link>
-      <Link to="/form2" className="ReactHookForm">
+      <Link to="/form1" className="ReactHookForm">
         React Hook Form
       </Link>
       <div className="results-container">
         {formDataForm1.map((data) => (
           <div className="results">
             <p>First Name: {data.firstName}</p>
+            <p>Gender: {data.gender}</p>
             <p>Age: {data.age}</p>
             <p>email: {data.email}</p>
             <p>password: {data.password}</p>
-            <p>subscribe: {data.subscribe}</p>
+            <p>country: {data.country}</p>
+            <p>
+              {data.file && (
+                <img src={data.file} alt="Uploaded" width={100} height={100} />
+              )}
+            </p>
           </div>
         ))}
       </div>

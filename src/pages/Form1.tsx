@@ -3,36 +3,50 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { Link, useNavigate } from 'react-router-dom';
 import './Form1Styles.css';
-import React from 'react';
-import { useDispatch } from 'react-redux';
+import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { addForm1Data } from '../store/formSlice';
+import { RootState } from '../store/store';
 
 const schema = yup
   .object({
     firstName: yup
       .string()
-      .matches(/^[A-Z][a-z]*$/, 'Name should start with an uppercase letter')
+      .matches(/^[A-Z][a-zA-Z]*$/, 'Name should start with an uppercase letter')
       .required('Name is required'),
     age: yup
       .number()
       .positive('Age must be a positive number')
       .integer('Age must be an integer')
       .required('Age is required'),
-    subscribe: yup.boolean().oneOf([true], 'Please accept the T&C'),
     password: yup
       .string()
-      .required('Password is required')
-      .min(6, 'Password should be at least 6 characters'),
+      .matches(
+        /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()_+}{"':;?/><,.[\]|`~\-\\]).{8,}$/,
+        'Password should contain at least 8 characters with at least one number, one uppercase letter, one lowercase letter, and one special character'
+      )
+      .required('Password is required'),
     confirmPassword: yup
       .string()
       .oneOf([yup.ref('password')], 'Passwords must match')
       .required('Confirm password is required'),
     email: yup
       .string()
-      .nullable()
       .email('Enter a valid email')
       .required('Email is required'),
-    // country: yup.string().required('Please select a country'),
+    gender: yup.string().required('gender is required'),
+    file: yup
+      .mixed()
+      .test('fileSize', 'File size is too large', (value) => {
+        if (!Array.isArray(value) || !value[0]) return true;
+        return value[0].size <= 1024 * 1024;
+      })
+      .test('fileType', 'Invalid file type', (value) => {
+        if (!Array.isArray(value) || !value[0]) return true;
+        return ['image/png', 'image/jpeg'].includes(value[0].type);
+      }),
+
+    country: yup.string().required('Please select a country'),
   })
   .required();
 type FormData = yup.InferType<typeof schema>;
@@ -45,6 +59,7 @@ export default function Form1() {
     formState: { errors },
     watch,
     trigger,
+    setValue,
   } = useForm<FormData>({
     resolver: yupResolver(schema),
   });
@@ -54,16 +69,53 @@ export default function Form1() {
   const onSubmit = (data: FormData) => {
     console.log(data);
     dispatch(addForm1Data(data));
+    // console.log('file=', data.file);
     navigate('/');
   };
 
-  // const firstNameValue = watch('firstName');
+  const fileValue = watch('file');
   const emailValue = watch('email');
-  React.useEffect(() => {
+  const firstNameValue = watch('firstName');
+  const ageValue = watch('age');
+  const passwordValue = watch('password');
+  const confirmPasswordValue = watch('confirmPassword');
+  useEffect(() => {
     if (emailValue) {
       trigger('email');
     }
-  }, [emailValue, trigger]);
+    if (firstNameValue) {
+      trigger('firstName');
+    }
+    if (ageValue) {
+      trigger('age');
+    }
+    if (passwordValue) {
+      trigger('password');
+    }
+    if (confirmPasswordValue) {
+      trigger('confirmPassword');
+    }
+    if (fileValue) {
+      trigger('file');
+    }
+  }, [
+    emailValue,
+    firstNameValue,
+    ageValue,
+    passwordValue,
+    confirmPasswordValue,
+    fileValue,
+    trigger,
+  ]);
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = event.target.files;
+    if (files) {
+      const file = URL.createObjectURL(files[0]);
+      setValue('file', file);
+    }
+  };
+  const countries = useSelector((state: RootState) => state.countries);
   return (
     <>
       <form onSubmit={handleSubmit(onSubmit)}>
@@ -86,24 +138,28 @@ export default function Form1() {
           placeholder="Confirm Password"
         />
         <p>{errors.confirmPassword?.message}</p>
-        <select>
+        <select {...register('gender')}>
           <option value="Man">Man</option>
           <option value="Woman">Woman</option>
         </select>
-        <input type="checkbox" id="subscribeNews" {...register('subscribe')} />
+        <p>{errors.gender?.message}</p>
+        <input type="checkbox" id="subscribeNews" />
         <label htmlFor="acceptTerms">I accept the Terms & Conditions</label>
-        <p>{errors.subscribe?.message}</p>
-        <input type="file" />
-        {/* <div>
-          <label htmlFor="city">City</label>
+        <input type="file" accept="image/*" onChange={handleFileChange} />
+        <p>{errors.file?.message}</p>
+        <div>
+          <label htmlFor="country">Country</label>
           <input
-            autoComplete="address-level2"
-            required
-            type="text"
-            id="city"
-            name="city"
+            list="countryList"
+            {...register('country')}
+            placeholder="Select a country"
           />
-        </div> */}
+          <datalist id="countryList">
+            {countries.map((country) => (
+              <option key={country.id} value={country.name} />
+            ))}
+          </datalist>
+        </div>
         <button type="submit">Send</button>
       </form>
       <Link to={`/`}>Main</Link>

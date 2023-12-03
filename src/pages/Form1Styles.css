@@ -21,7 +21,7 @@ p {
 input[type='text'],
 input[type='number'],
 select {
-  width: calc(100% - 200px);
+  width: calc(100% - 250px);
   margin-bottom: 10px;
   border: 1px solid #ccc;
   border-radius: 4px;

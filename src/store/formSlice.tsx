@@ -3,16 +3,25 @@ import { createSlice } from '@reduxjs/toolkit';
 export interface FormState {
   form1Data: {
     firstName: string;
+    gender: string;
     age: number;
     email: string;
     password: string;
     confirmPassword: string;
-    subscribe: boolean;
+    file: string | null;
+    country: string;
   }[];
+  countries: { id: string; name: string }[];
 }
 
+const initialCountries = [
+  { id: '1', name: 'Russia' },
+  { id: '2', name: 'Ukraine' },
+  { id: '3', name: 'Belarus' },
+];
 const initialState: FormState = {
   form1Data: [],
+  countries: initialCountries,
 };
 
 export const formSlice = createSlice({
