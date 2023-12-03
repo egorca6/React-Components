@@ -16,6 +16,9 @@ const Form = () => {
     const firstName = formData.get('firstName') as string;
     const email = formData.get('email') as string;
     const age = formData.get('age') as string;
+    const password = formData.get('password') as string;
+    const confirmPassword = formData.get('confirmPassword');
+    const file = fileInputRef.current?.files?.[0];
     const errorsObj: { [key: string]: string } = {};
 
     if (!/^[A-Z]/.test(firstName)) {
@@ -30,8 +33,31 @@ const Form = () => {
     if (isNaN(Number(age)) || Number(age) < 0) {
       errorsObj.age = 'Please enter a valid non-negative number for age.';
     }
+
+    const passwordStrengthRegex =
+      /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*\W).{8,}$/;
+    if (!passwordStrengthRegex.test(password)) {
+      errorsObj.password =
+        'Password should have 1 number, 1 uppercase letter, 1 lowercase letter, 1 special character, and at least 8 characters.';
+    }
+    if (password !== confirmPassword) {
+      errorsObj.confirmPassword = 'Passwords do not match.';
+    }
+    if (file) {
+      const allowedExtensions = ['image/jpeg', 'image/png'];
+      const maxSizeInBytes = 1e6;
+      if (!allowedExtensions.includes(file.type)) {
+        errorsObj.file = 'Please upload a valid image (jpeg or png).';
+      }
+      if (file.size > maxSizeInBytes) {
+        errorsObj.file = 'File size should be less than 5MB.';
+      }
+    } else {
+      errorsObj.file = 'Please upload an image.';
+    }
+    const isValid = Object.keys(errorsObj).length === 0;
     setErrors(errorsObj);
-    return Object.keys(errorsObj).length === 0;
+    return isValid;
   };
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
@@ -78,7 +104,18 @@ const Form = () => {
           {errors.email && <p className="error">{errors.email}</p>}
         </div>
         <div>
-          <input type="password" name="password" placeholder="Password" />
+          <input type="text" name="password" placeholder="Password" />
+          {errors.password && <p className="error">{errors.password}</p>}
+        </div>
+        <div>
+          <input
+            type="text"
+            name="confirmPassword"
+            placeholder="Confirm Password"
+          />
+          {errors.confirmPassword && (
+            <p className="error">{errors.confirmPassword}</p>
+          )}
         </div>
         <div>
           <label htmlFor="country"></label>
@@ -97,6 +134,7 @@ const Form = () => {
         <label htmlFor="acceptTerms">I accept the Terms & Conditions</label>
         <div>
           <input type="file" name="file" ref={fileInputRef} accept="image/*" />
+          {errors.file && <p className="error">{errors.file}</p>}
         </div>
         <button type="submit">Send</button>
       </form>
